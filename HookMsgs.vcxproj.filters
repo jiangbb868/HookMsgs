@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="cpp">
+      <UniqueIdentifier>{60da2067-a633-47ae-bc06-4798008dde1a}</UniqueIdentifier>
+      <Extensions>cpp;c;cxx;rc;def;r;odl;idl;hpj;bat</Extensions>
+    </Filter>
+    <Filter Include="inc">
+      <UniqueIdentifier>{c09ebae8-22b3-4a69-b063-c8211b8ffbf7}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl</Extensions>
+    </Filter>
+    <Filter Include="res">
+      <UniqueIdentifier>{874a419e-5fe8-474a-a851-d1e1f01fa0ef}</UniqueIdentifier>
+      <Extensions>ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="HookMsgs.cpp">
+      <Filter>cpp</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="HookMsgs.def">
+      <Filter>cpp</Filter>
+    </CustomBuild>
+  </ItemGroup>
+</Project>

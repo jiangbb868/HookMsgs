@@ -1,0 +1,7 @@
+LIBRARY HookMsgs
+EXPORTS
+SetHook
+UnHook			
+SetHookConfig
+SEGMENTS
+MySec	READ WRITE SHARED
