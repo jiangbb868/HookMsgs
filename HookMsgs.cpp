@@ -1,4 +1,6 @@
 #include <windows.h>
+#include <time.h>
+#include <sys/timeb.h>
 
 #pragma warning(disable:4786)	
 #include <map>
@@ -11,6 +13,7 @@ HHOOK	g_hMouse	= NULL;
 HHOOK	g_hKeyboard	= NULL;
 FILE*	g_pFile		= NULL;
 BOOL	g_bShowed	= FALSE;
+long long g_lastEventTime = 0;
 
 #define MAP		map<UINT, P_HOOK_PROC>
 #define PAIR	pair<UINT, P_HOOK_PROC>
@@ -47,6 +50,7 @@ LRESULT CALLBACK MouseProc(
 	LPARAM lParam   // mouse coordinates
 	)
 {
+
 
 #ifdef HOOK_LOG
 	if (g_pFile != NULL) {
@@ -96,21 +100,37 @@ LRESULT CALLBACK KeyboardProc(
 //	g_hookProc(g_hWnd, nCode, wParam, lParam, NULL);
 #endif
 
-	if (wParam == VK_MENU &&  GetKeyState(VK_CONTROL) & 0x80) {
-		if (g_bShowed) {
-			ShowWindow(g_hWnd, SW_HIDE);
-			g_bShowed = FALSE;
-		} else {
-			ShowWindow(g_hWnd, SW_SHOW);
-			g_bShowed = TRUE;
+	if (HC_ACTION == nCode) {
+		if (WM_KEYDOWN == wParam || WM_SYSKEYDOWN) {
+			KBDLLHOOKSTRUCT *keyInfo = (KBDLLHOOKSTRUCT*)lParam;
+			BOOL bCtrl	= GetKeyState(VK_CONTROL)	& 0x8000;  
+			BOOL bShift	= GetKeyState(VK_SHIFT)		& 0x8000;  
+			BOOL bAlt	= GetKeyState(VK_MENU)		& 0x8000; 
+			if (((char)wParam == 'C' || (char)wParam == 'c') && bShift) {
+				if (g_bShowed) {
+					ShowWindow(g_hWnd, SW_HIDE);
+					g_bShowed = FALSE;
+				} else {
+					ShowWindow(g_hWnd, SW_SHOW);
+					::SetWindowPos(g_hWnd, g_hWnd, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE); 
+					g_bShowed = TRUE;
+				}
+				return 1;
+			} else if (wParam == VK_DOWN && ((lParam & 0x40000000) != 0)) {
+				SendMessage(g_hWnd, WM_USER + 101, NULL, NULL);
+				return 1;
+			} else if (wParam == VK_UP && ((lParam & 0x40000000) != 0)) {
+				return 1;
+				SendMessage(g_hWnd, WM_USER + 102, NULL, NULL);
+			} else if (((char)wParam == 'G' || (char)wParam == 'g') && bShift) {
+				SendMessage(g_hWnd, WM_USER + 103, NULL, NULL);
+				return 1;
+			} else if (((char)wParam == 'D' || (char)wParam == 'd') && bShift) {
+				SendMessage(g_hWnd, WM_USER + 104, NULL, NULL);
+				return 1;
+			}
 		}
-		return 1;
-	} else if (wParam == VK_DOWN && ((lParam & 0x40000000) != 0)) {
-		SendMessage(g_hWnd, WM_USER + 101, NULL, NULL);
-	} else if (wParam == VK_UP && ((lParam & 0x40000000) != 0)) {
-		SendMessage(g_hWnd, WM_USER + 102, NULL, NULL);
 	}
-
 	return CallNextHookEx(g_hKeyboard, nCode, wParam, lParam);
 }
 

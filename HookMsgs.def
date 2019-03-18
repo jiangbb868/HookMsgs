@@ -3,5 +3,5 @@ EXPORTS
 SetHook
 UnHook			
 SetHookConfig
-SEGMENTS
+SECTIONS
 MySec	READ WRITE SHARED
