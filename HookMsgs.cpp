@@ -102,31 +102,41 @@ LRESULT CALLBACK KeyboardProc(
 
 	if (HC_ACTION == nCode) {
 		if (WM_KEYDOWN == wParam || WM_SYSKEYDOWN) {
-			KBDLLHOOKSTRUCT *keyInfo = (KBDLLHOOKSTRUCT*)lParam;
 			BOOL bCtrl	= GetKeyState(VK_CONTROL)	& 0x8000;  
 			BOOL bShift	= GetKeyState(VK_SHIFT)		& 0x8000;  
 			BOOL bAlt	= GetKeyState(VK_MENU)		& 0x8000; 
 			if (((char)wParam == 'C' || (char)wParam == 'c') && bShift) {
-				if (g_bShowed) {
-					ShowWindow(g_hWnd, SW_HIDE);
-					g_bShowed = FALSE;
-				} else {
-					ShowWindow(g_hWnd, SW_SHOW);
-					::SetWindowPos(g_hWnd, g_hWnd, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE); 
-					g_bShowed = TRUE;
+				if ((lParam & 0x40000000) != 0) { //响应按键按下，按键抬起则略过。
+					if (g_bShowed) {
+						ShowWindow(g_hWnd, SW_HIDE);
+						g_bShowed = FALSE;
+					} else {
+						::SetWindowPos(g_hWnd, HWND_TOP, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE); 
+						ShowWindow(g_hWnd, SW_SHOW);
+						::SetWindowPos(g_hWnd, HWND_TOP, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE); 
+						g_bShowed = TRUE;
+					}
 				}
 				return 1;
-			} else if (wParam == VK_DOWN && ((lParam & 0x40000000) != 0)) {
-				SendMessage(g_hWnd, WM_USER + 101, NULL, NULL);
+			} else if (wParam == VK_DOWN) {
+				if ((lParam & 0x40000000) != 0) {
+				//	SendMessage(g_hWnd, WM_USER + 101, NULL, NULL);
+				}
 				return 1;
-			} else if (wParam == VK_UP && ((lParam & 0x40000000) != 0)) {
+			} else if (wParam == VK_UP) {
+				if ((lParam & 0x40000000) != 0) {
+				//	SendMessage(g_hWnd, WM_USER + 102, NULL, NULL);
+				}
 				return 1;
-				SendMessage(g_hWnd, WM_USER + 102, NULL, NULL);
 			} else if (((char)wParam == 'G' || (char)wParam == 'g') && bShift) {
-				SendMessage(g_hWnd, WM_USER + 103, NULL, NULL);
+				if ((lParam & 0x40000000) != 0) {
+					SendMessage(g_hWnd, WM_USER + 103, NULL, NULL);
+				}
 				return 1;
 			} else if (((char)wParam == 'D' || (char)wParam == 'd') && bShift) {
-				SendMessage(g_hWnd, WM_USER + 104, NULL, NULL);
+				if ((lParam & 0x40000000) != 0) {
+					SendMessage(g_hWnd, WM_USER + 104, NULL, NULL);
+				}
 				return 1;
 			}
 		}
